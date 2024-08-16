@@ -2,12 +2,13 @@
  * @jest-environment jsdom
  */
 
-import {screen, waitFor} from "@testing-library/dom"
+import { screen, waitFor } from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
-import { ROUTES_PATH} from "../constants/routes.js";
-import {localStorageMock} from "../__mocks__/localStorage.js";
-
+import { localStorageMock } from "../__mocks__/localStorage.js";
+import userEvent from "@testing-library/user-event";
+import Bills from "../containers/Bills.js";
+import { ROUTES, ROUTES_PATH } from "../constants/routes"
 import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
@@ -35,6 +36,18 @@ describe("Given I am connected as an employee", () => {
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
+    })
+    test("Then I click on newBill button, handleClickNewBill should be called", () => {
+      document.body.innerHTML = BillsUI({ data: bills })
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      const billsDashboard = new Bills({ document, onNavigate: onNavigate, store: null, localStorage: window.localStorage })
+      const newBillButton = screen.getByTestId('btn-new-bill')
+      const handleClickNewBill = jest.fn(billsDashboard.handleClickNewBill)
+      newBillButton.addEventListener('click', handleClickNewBill)
+      userEvent.click(newBillButton)
+      expect(handleClickNewBill).toHaveBeenCalled()
     })
   })
 })
