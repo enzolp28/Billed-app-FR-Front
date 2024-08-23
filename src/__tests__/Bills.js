@@ -6,6 +6,7 @@ import { screen, waitFor } from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { localStorageMock } from "../__mocks__/localStorage.js";
+import mockStore from "../__mocks__/store.js";
 import userEvent from "@testing-library/user-event";
 import Bills from "../containers/Bills.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes"
@@ -49,5 +50,32 @@ describe("Given I am connected as an employee", () => {
       userEvent.click(newBillButton)
       expect(handleClickNewBill).toHaveBeenCalled()
     })
+
+    test("Then I click on icon eye, handleClickIconEye should be called", () => {
+      document.body.innerHTML = BillsUI({ data: bills })
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      const billsDashboard = new Bills({ document, onNavigate: onNavigate, store: null, localStorage: window.localStorage })
+      const iconEye = screen.getAllByTestId('icon-eye')
+      const handleClickIconEye = jest.fn(billsDashboard.handleClickIconEye)
+      $.fn.modal = jest.fn();
+      iconEye.forEach(icon => {
+        icon.addEventListener('click', ()=>handleClickIconEye(icon))
+        userEvent.click(icon)
+        expect(handleClickIconEye).toHaveBeenCalled()
+      })
+    })
+
+    test("When I enter bills page, getBills should return the store bills ", async () => {
+      document.body.innerHTML = BillsUI({ data: bills })
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      const billsDashboard = new Bills({ document, onNavigate: onNavigate, store: mockStore, localStorage: window.localStorage })
+      const getBills = jest.fn(billsDashboard.getBills)
+      const billsResult = await billsDashboard.getBills()
+      expect(billsResult.length).toBe(4)
+    })
   })
-})
+})  
