@@ -22,6 +22,8 @@ export const modal = () => (`
   `)
 
 export default (bill) => {
+  console.log(bill);
+  
 
   return (`
     <div class="container dashboard-form" data-testid="dashboard-form">
@@ -86,7 +88,8 @@ export default (bill) => {
           <label for="commentary-admin" class="bold-label">Votre commentaire</label>
           <div class='input-field'> ${bill.commentAdmin} </div>
         </div>
-       `)}
+       `)
+      }
       </div>
       <div class="row">
       ${bill.status === 'pending' ? (`

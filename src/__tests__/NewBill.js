@@ -12,17 +12,27 @@ import router from "../app/Router.js";
 import { fireEvent } from "@testing-library/dom";
 import { ROUTES, ROUTES_PATH } from "../constants/routes";
 
+const onNavigate = (pathname) => {
+  document.body.innerHTML = ROUTES({ pathname })
+}
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
-    test("Then I click on 'choisir un fichier' button, handleChangeFile should be called", () => {
-      document.body.innerHTML = NewBillUI()
+    beforeAll(() => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
       }))
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
+      document.body.innerHTML = NewBillUI()
+    })
+    test("Then I click on 'choisir un fichier' button, handleChangeFile should be called", () => {
+      //document.body.innerHTML = NewBillUI()
+      // Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      // window.localStorage.setItem('user', JSON.stringify({
+      //   type: 'Employee'
+      // }))
+      // const onNavigate = (pathname) => {
+      //   document.body.innerHTML = ROUTES({ pathname })
+      // }
       const newBill = new NewBill({ document, onNavigate: onNavigate, store: mockStore, localStorage: window.localStorage })
       const fileInput = screen.getByTestId('file')
       newBill.handleChangeFile = jest.fn()
@@ -36,17 +46,15 @@ describe("Given I am connected as an employee", () => {
       expect(handleClickFileButton).toHaveBeenCalled()
     })
   })
-
-  describe("When I am on NewBill Page and I click on 'Envoyer'", () => {
-    test("Then I should be sent on Dashboard with big billed icon instead of form", () => {
-      document.body.innerHTML = NewBillUI()
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee'
-      }))
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
+    test("When I am on NewBill Page and I click on 'Envoyer' Then I should be sent on Dashboard with big billed icon instead of form", () => {
+      
+      // Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      // window.localStorage.setItem('user', JSON.stringify({
+      //   type: 'Employee'
+      // }))
+      // const onNavigate = (pathname) => {
+      //   document.body.innerHTML = ROUTES({ pathname })
+      // }
       const newBill = new NewBill({ document, onNavigate: onNavigate, store: mockStore, localStorage: window.localStorage })
       const handleSubmit = jest.fn(newBill.handleSubmit)
       const form = screen.getByTestId('form-new-bill')
@@ -55,4 +63,4 @@ describe("Given I am connected as an employee", () => {
       expect(handleSubmit).toHaveBeenCalled()
     })
   })
-})
+
