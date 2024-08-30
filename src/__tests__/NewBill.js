@@ -91,8 +91,8 @@ describe("Given I am connected as an employee", () => {
       });
 
 
-      const handleSubmit = jest.fn(newBill.handleSubmit)
-      newBill.updateBill = jest.fn()
+      const handleSubmit = jest.fn(newBill.handleSubmit) //permet de surveiller le comportement de la fonction
+      newBill.updateBill = jest.fn() //verifie quelle est appelee en lui assignant une fonction vide
       const form = screen.getByTestId('form-new-bill')
       form.addEventListener('submit', handleSubmit)
       fireEvent.submit(form)

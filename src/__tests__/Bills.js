@@ -12,14 +12,20 @@ import Bills from "../containers/Bills.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes"
 import router from "../app/Router.js";
 
+
+
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
-    test("Then bill icon in vertical layout should be highlighted", async () => {
-
+    beforeAll(() => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
       }))
+    })
+    test("Then bill icon in vertical layout should be highlighted", async () => {
+
+      //Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
@@ -59,7 +65,7 @@ describe("Given I am connected as an employee", () => {
       const billsDashboard = new Bills({ document, onNavigate: onNavigate, store: null, localStorage: window.localStorage })
       const iconEye = screen.getAllByTestId('icon-eye')
       const handleClickIconEye = jest.fn(billsDashboard.handleClickIconEye)
-      $.fn.modal = jest.fn();
+      $.fn.modal = jest.fn(); // desactive la modal en mettant une fonction vide dans le modal de jQUERY
       iconEye.forEach(icon => {
         icon.addEventListener('click', ()=>handleClickIconEye(icon))
         userEvent.click(icon)
